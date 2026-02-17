@@ -22,5 +22,18 @@ export class ProductsController {
   async findOne(@Param('id') id: string) {
     return this.productsService.getProductDetail(id);
   }
+   @Patch('update/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.productsService.updateProduct(id, updateProductDto, file);
+  }
 
+  @Delete('delete/:id')
+  async deleteProduct(@Param('id') id: string) {
+    return this.productsService.deleteProduct(id);
+  }
 }

@@ -73,4 +73,67 @@ export class ProductsService {
       createdAt: product.createdAt
     };
   }
+  async updateProduct(productId: string, updateProductDto: UpdateProductDto, newImageFile?: Express.Multer.File): Promise<ProductResponse> {
+
+    const productIndex = this.products.findIndex(p => p._id === productId);
+
+    if (productIndex === -1) {
+      throw new NotFoundException("Product not found");
+    }
+
+    const existingProduct = this.products[productIndex];
+
+    // If a new image is uploaded, remove the old one from storage
+    if (newImageFile && existingProduct.imageUrl) {
+      const oldPath = `.${existingProduct.imageUrl}`; // Adjust path to find the file
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+      existingProduct.imageUrl = `/${newImageFile.path.replace(/\\/g, '/')}`;
+    }
+
+    // Update text fields
+    const updatedProduct = {
+      ...existingProduct,
+      ...updateProductDto,
+      _id: existingProduct._id,
+      updatedAt: new Date()
+    };
+
+    this.products[productIndex] = updatedProduct;
+
+    return {
+      id: updatedProduct._id,
+      name: updatedProduct.name,
+      price: updatedProduct.price,
+      description: updatedProduct.description,
+      category: updatedProduct.category,
+      imageUrl: updatedProduct.imageUrl,
+      createdAt: updatedProduct.createdAt
+    };
+  }
+
+  // 2. DELETE PRODUCT
+  async deleteProduct(productId: string) {
+    const productIndex = this.products.findIndex(p => p._id === productId);
+
+    if (productIndex === -1) {
+      throw new NotFoundException("Product not found");
+    }
+
+    const productToDelete = this.products[productIndex];
+
+    // Remove the file from storage before removing from the array
+    if (productToDelete.imageUrl) {
+      const filePath = `.${productToDelete.imageUrl}`;
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    this.products.splice(productIndex, 1);
+    return {
+      message: "Product deleted successfully"
+    };
+  }
 }
