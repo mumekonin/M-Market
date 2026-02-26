@@ -1,15 +1,16 @@
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import{UserSchema} from "../schema/users.shema"
-import { CreateUserDto } from "../dto/users.dto";
+import { CreateUserDto, LoginDto } from "../dto/users.dto";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { UserRespones } from "../response/users.response";
+import { commonUtils } from "src/commons/utils";
 @Injectable()
 export class UserService{
   constructor(
     @InjectModel(UserSchema.name)
-    private readonly userModel:Model<UserSchema>
+    private readonly userModel:Model<UserSchema>,
   ){}
   async createUser(createUserDto:CreateUserDto){
       //check if the user exists
@@ -36,5 +37,23 @@ export class UserService{
        role:savedUser.role
      }
      return userResponse;
+  }
+  async userLogin(logInDto:LoginDto){
+      const user = await this.userModel.findOne({email:logInDto.email})
+      if(!user){
+        throw new BadRequestException("user is not found");
+      }
+      //comper password 
+      const isPwdValid = await  bcrypt.compare(logInDto.password ,user.password )
+
+      const jwtData={
+        email:user.email,
+        role:user.role
+      }
+      const generateJwtToken = commonUtils.generateJwtToken(jwtData)
+
+      return {
+        token:generateJwtToken
+      }
   }
 }

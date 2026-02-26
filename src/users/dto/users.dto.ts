@@ -12,3 +12,11 @@ export class CreateUserDto{
    @IsAlpha()
    password:string
 }
+export class LoginDto{
+   @IsEmail()
+   @IsNotEmpty()
+   email:string;
+   @IsString()
+   @IsNotEmpty()
+   password:string;
+}
