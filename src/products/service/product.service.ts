@@ -74,13 +74,11 @@ export class ProductsService {
     };
   }
   async updateProduct(productId: string, updateProductDto: UpdateProductDto, newImageFile?: Express.Multer.File): Promise<ProductResponse> {
-
     const productIndex = this.products.findIndex(p => p._id === productId);
 
     if (productIndex === -1) {
       throw new NotFoundException("Product not found");
     }
-
     const existingProduct = this.products[productIndex];
 
     // If a new image is uploaded, remove the old one from storage
@@ -113,7 +111,7 @@ export class ProductsService {
     };
   }
 
-  // 2. DELETE PRODUCT
+  //  DELETE PRODUCT
   async deleteProduct(productId: string) {
     const productIndex = this.products.findIndex(p => p._id === productId);
 
@@ -130,7 +128,6 @@ export class ProductsService {
         fs.unlinkSync(filePath);
       }
     }
-
     this.products.splice(productIndex, 1);
     return {
       message: "Product deleted successfully"
