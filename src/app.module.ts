@@ -5,6 +5,7 @@ import { ProductsModule } from './products/product.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './users/users.module';
+import { JwtStrategy } from './commons/guards/jwt.sstrategy';
 
 @Module({
   imports: [  
@@ -20,6 +21,6 @@ import { UserModule } from './users/users.module';
     })
     ,ProductsModule,UserModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

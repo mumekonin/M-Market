@@ -8,7 +8,10 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
-  readonly name?: string;
-  readonly price?: number;
-  readonly description?: string;
+   proName?:string;
+   proDescrption?:string;
+   price?:number;
+   storage?:string;
+   color?:string;
+   imageUrl?:string; 
 }
