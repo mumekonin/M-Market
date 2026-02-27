@@ -1,9 +1,7 @@
 export class ProductResponse {
-  id: string;
-  name: string;
+  proName: string;
+  proDescrption: string;
   price: number;
-  description: string;
-  category: string;
-  imageUrl?: string;
-  createdAt?: Date;
+  storage: string;
+  color: string;
 }
