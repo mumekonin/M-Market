@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './users/users.module';
 import { JwtStrategy } from './commons/guards/jwt.sstrategy';
+import { OrderModule } from './orders/orders.module';
 
 @Module({
   imports: [  
@@ -19,7 +20,7 @@ import { JwtStrategy } from './commons/guards/jwt.sstrategy';
         uri: configService.get<string>('MONGO_URI'),
       }),
     })
-    ,ProductsModule,UserModule],
+    ,ProductsModule,UserModule,OrderModule],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
 })

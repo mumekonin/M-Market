@@ -22,6 +22,7 @@ export class ProductsService {
       price: createProductDto.price,
       color: createProductDto.color,
       storage: createProductDto.storage,
+      stock: createProductDto.stock,
       imageUrl: imageUrl.path
     })
 
@@ -46,6 +47,7 @@ export class ProductsService {
         price: products.price,
         storage: products.storage,
         color: products.color,
+        stock:products.stock
       }
     });
     return productResponse
@@ -83,7 +85,9 @@ export class ProductsService {
       product.color = updateProductDto.color;
     } if (updateProductDto.storage) {
       product.storage = updateProductDto.storage;
-    }
+    }if (updateProductDto.stock ) { // <--- ADD THIS BLOCK 
+    product.stock = updateProductDto.stock;
+  }
 
     if (image && image.path) {
       // Delete old image if exists
@@ -108,6 +112,7 @@ export class ProductsService {
       color: updatedProduct.color,
       storage: updatedProduct.storage,
       imageUrl: updatedProduct.imageUrl,
+      stock:updatedProduct.stock
     };
     return productResponse;
   }

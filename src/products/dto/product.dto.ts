@@ -5,6 +5,7 @@ export class CreateProductDto {
    storage:string;
    color:string;
    imageUrl:string; 
+   stock: number;
 }
 
 export class UpdateProductDto {
@@ -14,4 +15,5 @@ export class UpdateProductDto {
    storage?:string;
    color?:string;
    imageUrl?:string; 
+   stock?:number;
 }

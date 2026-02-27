@@ -12,5 +12,7 @@ export class ProductSchema{
   @Prop()
   color:string;
   @Prop()
+  stock:number;
+  @Prop()
   imageUrl:string;
 } export const  productSchema = SchemaFactory.createForClass(ProductSchema)

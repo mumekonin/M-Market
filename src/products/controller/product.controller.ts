@@ -33,7 +33,6 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    console.log(file.path)
     return this.productsService.updateProduct(id, updateProductDto, file);
   }
 

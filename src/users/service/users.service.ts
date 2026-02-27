@@ -47,6 +47,7 @@ export class UserService{
       const isPwdValid = await  bcrypt.compare(logInDto.password ,user.password )
 
       const jwtData={
+        userId:user._id.toString(),
         email:user.email,
         role:user.role
       }
