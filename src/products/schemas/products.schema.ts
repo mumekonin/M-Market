@@ -1,18 +1,21 @@
-import { Prop ,Schema, SchemaFactory} from "@nestjs/mongoose";
-@Schema({timestamps:true})
-export class ProductSchema{
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ProductCategory } from "src/commons/enums";
+@Schema({ timestamps: true })
+export class ProductSchema {
   @Prop()
-  proName:string;
+  proName: string;
   @Prop()
-  proDescrption:string;
+  proDescrption: string;
   @Prop()
-  price:number;
+  price: number;
   @Prop()
-  storage:string;
+  storage: string;
   @Prop()
-  color:string;
+  color: string;
   @Prop()
-  stock:number;
+  stock: number;
   @Prop()
-  imageUrl:string;
-} export const  productSchema = SchemaFactory.createForClass(ProductSchema)
+  imageUrl: string;
+  @Prop({ type: String, enum: Object.values(ProductCategory), required: true })
+  category: ProductCategory;
+} export const productSchema = SchemaFactory.createForClass(ProductSchema)

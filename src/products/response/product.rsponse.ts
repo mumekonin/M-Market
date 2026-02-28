@@ -6,4 +6,5 @@ export class ProductResponse {
   storage?: string;
   color?: string;
   stock?:number;
+  category?:string;
 }

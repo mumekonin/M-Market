@@ -23,11 +23,10 @@ export class ProductsService {
       color: createProductDto.color,
       storage: createProductDto.storage,
       stock: createProductDto.stock,
-      imageUrl: imageUrl.path
+      imageUrl: imageUrl.path,
+      category: createProductDto.category
     })
-
     const savedProducts = await newProduct.save();
-
     return {
       message: "product added succesfully",
       product: savedProducts
@@ -47,7 +46,8 @@ export class ProductsService {
         price: products.price,
         storage: products.storage,
         color: products.color,
-        stock:products.stock
+        stock: products.stock,
+        category:products.category
       }
     });
     return productResponse
@@ -67,10 +67,11 @@ export class ProductsService {
       price: product.price,
       storage: product.storage,
       color: product.color,
+      category: product.category
     }
     return productResponse
   }
-  async updateProduct(productId: string, updateProductDto: UpdateProductDto, image: Express.Multer.File) {
+  async updateProduct(productId: string, updateProductDto: UpdateProductDto, image?: Express.Multer.File) {
     const product = await this.productModel.findById(productId)
     if (!product) {
       throw new NotFoundException("Product not found");
@@ -85,9 +86,11 @@ export class ProductsService {
       product.color = updateProductDto.color;
     } if (updateProductDto.storage) {
       product.storage = updateProductDto.storage;
-    }if (updateProductDto.stock ) { // <--- ADD THIS BLOCK 
-    product.stock = updateProductDto.stock;
-  }
+    } if (updateProductDto.stock) {
+      product.stock = updateProductDto.stock;
+    }if(updateProductDto.category){
+      product.category=updateProductDto.category;
+    }
 
     if (image && image.path) {
       // Delete old image if exists
@@ -112,7 +115,8 @@ export class ProductsService {
       color: updatedProduct.color,
       storage: updatedProduct.storage,
       imageUrl: updatedProduct.imageUrl,
-      stock:updatedProduct.stock
+      stock: updatedProduct.stock,
+      category:updatedProduct.category
     };
     return productResponse;
   }
@@ -120,10 +124,10 @@ export class ProductsService {
   //  DELETE PRODUCT
   async deleteProduct(productId: string) {
     const productToBeDeleted = await this.productModel.findById(productId);
-    if(!productToBeDeleted){
+    if (!productToBeDeleted) {
       throw new BadRequestException("such product is not found")
     }
-      //remove the file from storage
+    //remove the file from storage
     if (productToBeDeleted.imageUrl && fs.existsSync(productToBeDeleted.imageUrl)) {
       fs.unlinkSync(productToBeDeleted.imageUrl);
     }
@@ -135,6 +139,36 @@ export class ProductsService {
       return {
         message: "product deleted successfully"
       };
+    }
   }
-}
+  //search product 
+  async searchProduct(key:string){
+    if(!key||typeof key!=='string' || key.trim().length===0){
+      throw new BadRequestException("search key must be a non empty string")
+    }
+    key =key.trim();
+    const searchProduct = await this.productModel.find({
+      $or:[
+        { proName: { $regex: key, $options: 'i' } },
+        { proDescrption: { $regex: key, $options: 'i' } },
+        { storage: { $regex: key, $options: 'i' } },
+        { color: { $regex: key, $options: 'i' } },
+      ]
+    });
+    if(!searchProduct||searchProduct.length===0){
+      throw new BadRequestException("product is not found")
+    }
+    const productResponse: ProductResponse[] = searchProduct.map((searchProduct) => {
+      return {
+        proName: searchProduct.proName,
+        proDescrption: searchProduct.proDescrption,
+        price: searchProduct.price,
+        storage: searchProduct.storage,
+        color: searchProduct.color,
+        stock: searchProduct.stock,
+        category:searchProduct.category
+      }
+    });
+    return productResponse
+  }
 }

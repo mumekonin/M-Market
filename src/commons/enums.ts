@@ -8,3 +8,9 @@ export enum OrderStatus {
   SHIPPED = 'shipped',
   CANCELLED = 'cancelled',
 }
+export enum ProductCategory {
+  PHONE = 'phone',
+  EARPODS = 'earpods',
+  WATCH = 'watch',
+  LAPTOP = 'macbook',
+}

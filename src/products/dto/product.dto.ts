@@ -1,19 +1,42 @@
-export class CreateProductDto {
-   proName:string;
-   proDescrption:string;
-   price:number;
-   storage:string;
-   color:string;
-   imageUrl:string; 
-   stock: number;
-}
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { ProductCategory } from "src/commons/enums";
 
+export class CreateProductDto {
+   @IsString()
+   proName: string;
+   @IsString()
+   proDescrption: string;
+   @IsNumber()
+   price: number;
+   @IsString()
+   storage: string;
+   @IsString()
+   color: string;
+   @IsString()
+   imageUrl: string;
+   @IsNumber()
+   stock: number;
+   @IsNotEmpty()
+   @IsEnum(ProductCategory)
+   category: ProductCategory;
+
+}
 export class UpdateProductDto {
-   proName?:string;
-   proDescrption?:string;
-   price?:number;
-   storage?:string;
-   color?:string;
-   imageUrl?:string; 
-   stock?:number;
+   @IsString()
+   proName?: string;
+   @IsString()
+   proDescrption?: string;
+   @IsNumber()
+   price?: number;
+   @IsString()
+   storage?: string;
+   @IsString()
+   color?: string;
+   @IsString()
+   imageUrl?: string;
+   @IsNumber()
+   stock?: number;
+   @IsNotEmpty()
+   @IsEnum(ProductCategory)
+   category: ProductCategory;
 }

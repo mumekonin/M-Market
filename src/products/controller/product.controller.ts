@@ -1,18 +1,21 @@
-import { Controller, Get, Post, Body, Param, Query, UseInterceptors, UploadedFile, Patch, Delete, BadRequestException } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Param, Query, UseInterceptors, UploadedFile, Patch, Delete, BadRequestException, UseGuards } from '@nestjs/common';
 import { ProductsService } from '../service/product.service';
 import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';
 import { UploadFileInterceptor } from 'src/commons/upload.intercepter';
-import { JwtAuthGuard } from 'src/commons/guards/jwt.guards';
+import { AuthGuard } from '@nestjs/passport';
+import { DbRolesGuard } from 'src/commons/guards/roles.guards';
+import { Roles } from 'src/commons/decorators/roles.decorators';
+import { Role } from 'src/commons/enums';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Post('upload')
- @UseInterceptors(UploadFileInterceptor())
+  @UseInterceptors(UploadFileInterceptor())
   async uploadProducts(@Body() createProductDto: CreateProductDto, @UploadedFile() file: Express.Multer.File) {
-    if(!file.path){
+    if (!file.path) {
       throw new BadRequestException("FILE IS REQUIRED")
     }
     return this.productsService.createProduct(createProductDto, file);
@@ -21,13 +24,14 @@ export class ProductsController {
   async getAllProduct() {
     return this.productsService.getAllProducts();
   }
-
   @Get('get-product-detail/:id')
   async findOn(@Param('id') id: string) {
     return this.productsService.getProductDetail(id);
   }
-   @Patch('update/:id')
-    @UseInterceptors(UploadFileInterceptor())
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch('update/:id')
+  @UseInterceptors(UploadFileInterceptor())
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -35,9 +39,15 @@ export class ProductsController {
   ) {
     return this.productsService.updateProduct(id, updateProductDto, file);
   }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.USER)
   @Delete('delete/:id')
   async deleteProduct(@Param('id') id: string) {
     return this.productsService.deleteProduct(id);
+  }
+  @Get('search-products')
+  async searchProduct(@Query('key') key: string){
+    const product = await this.productsService.searchProduct(key);
+    return product
   }
 }
