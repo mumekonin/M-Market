@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProductSchema } from 'src/products/schemas/products.schema';
 import { Order } from '../schemas/orders.schemas';
+import { OrderStatus } from 'src/commons/enums';
 
 @Injectable()
 export class OrdersService {
@@ -38,8 +39,12 @@ async createOrder( userId: string,  productId: string,  quantity: number, screen
     const allOrder= await this.orderModel.find().populate('userId', 'name email').populate('productId').exec();
     return allOrder;
   }
-  // Admin: Update status [cite: 26]
-  async updateStatus(orderId: string, status: string) {
-    return await this.orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
+
+async updateStatus(orderId: string, status:OrderStatus) {
+  const updatedOrder = await this.orderModel.findByIdAndUpdate( orderId, { status },  {returnDocument: 'after'}).populate('productId');
+  if (!updatedOrder) {
+    throw new NotFoundException('Order not found');
   }
+  return updatedOrder;
+}
 }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { OrderStatus } from 'src/commons/enums';
 
 @Schema({ timestamps: true }) 
 export class Order extends Document {
@@ -15,12 +16,8 @@ export class Order extends Document {
   @Prop({ required: true })
   totalPrice: number;
 
-  @Prop({ 
-    type: String, 
-    enum: ['pending', 'shipped', 'delivered'], 
-    default: 'pending' 
-  })
-  status: string; 
+  @Prop({ type: String,enum: Object.values(OrderStatus), default: OrderStatus.PENDING })
+  status: OrderStatus; 
   @Prop()
   paymentScreenshot: string;
 }
