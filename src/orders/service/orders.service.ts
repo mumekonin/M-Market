@@ -13,7 +13,7 @@ export class OrdersService {
 
 async createOrder( userId: string,  productId: string,  quantity: number, screenshot: Express.Multer.File ) {
   const product = await this.productModel.findById(productId);
-  if (!product || product.stock < quantity) {
+  if (!product || product.stock <quantity) {
     throw new BadRequestException('Product unavailable or insufficient stock');
   }
   const totalPrice = product.price * quantity; 
@@ -28,18 +28,16 @@ async createOrder( userId: string,  productId: string,  quantity: number, screen
  
     product.stock -= quantity;
     await product.save();
-
     return await newOrder.save();
 }
   async getMyOrders(userId: string) {
-    return await this.orderModel.find({ userId }).populate('productId').exec();
+    const myOrder = await this.orderModel.find({userId:userId}).populate('productId').exec();
+    return myOrder;
   }
-
-  // Admin: Get all orders [cite: 26]
   async getAllOrders() {
-    return await this.orderModel.find().populate('userId', 'name email').populate('productId').exec();
+    const allOrder= await this.orderModel.find().populate('userId', 'name email').populate('productId').exec();
+    return allOrder;
   }
-
   // Admin: Update status [cite: 26]
   async updateStatus(orderId: string, status: string) {
     return await this.orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
