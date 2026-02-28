@@ -1,7 +1,11 @@
-import {Controller, Post, Body, UseInterceptors, UploadedFile, Req, BadRequestException, Get} from '@nestjs/common';
+import {Controller, Post, Body, UseInterceptors, UploadedFile, Req, BadRequestException, Get, UseGuards} from '@nestjs/common';
 import { OrdersService } from '../service/orders.service';
 import { JwtAuthGuard } from 'src/commons/guards/jwt.guards';
 import { UploadFileInterceptor } from 'src/commons/upload.intercepter';
+import { Roles } from 'src/commons/decorators/roles.decorators';
+import { AuthGuard } from '@nestjs/passport';
+import { DbRolesGuard } from 'src/commons/guards/roles.guards';
+import { Role } from 'src/commons/enums';
 
 @Controller('orders')
 export class OrdersController {
@@ -24,7 +28,8 @@ async getMyOrder( @Req() req: any){
      const result = await this.ordersService.getMyOrders(userId)
      return result
 }
-// @JwtAuthGuard()
+@UseGuards(AuthGuard('jwt'),DbRolesGuard)
+@Roles(Role.USER)
 @Get('allOrders')
 async getAllOrder(){
     const result = await this.ordersService.getAllOrders()

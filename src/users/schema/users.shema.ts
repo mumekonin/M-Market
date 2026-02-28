@@ -9,6 +9,6 @@ export class UserSchema extends Document{
     email:string;
     @Prop()
     password:string;
-    @Prop()
-    role:string
+     @Prop({default:'user'})
+     role:string;
 }export const userSchema = SchemaFactory.createForClass(UserSchema)
