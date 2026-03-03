@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, UseInterceptors, UploadedFile, Req, BadRequestException, Get, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Post, Param, Body, UseInterceptors, UploadedFile, Req, BadRequestException, Get, UseGuards, Patch, Delete } from '@nestjs/common';
 import { OrdersService } from '../service/orders.service';
 import { UploadFileInterceptor } from 'src/commons/upload.intercepter';
 import { Roles } from 'src/commons/decorators/roles.decorators';
@@ -29,8 +29,8 @@ export class OrdersController {
     const result = await this.ordersService.getMyOrders(userId)
     return result
   }
-  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  @Roles(Role.USER)
+  // @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  // @Roles(Role.ADMIN)
   @Get('allOrders')
   async getAllOrder() {
     const result = await this.ordersService.getAllOrders()
@@ -45,5 +45,10 @@ export class OrdersController {
       message: 'Status updated!',
       order: result
     }
+  }
+  @Delete("delete/:id")
+  async deleteOrder(@Param("id") id:string){
+    const result = await this.ordersService.deleteOrder(id)
+    return result;
   }
 }

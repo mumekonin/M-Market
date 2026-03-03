@@ -47,7 +47,8 @@ export class ProductsService {
         storage: products.storage,
         color: products.color,
         stock: products.stock,
-        category:products.category
+        category:products.category,
+        imageUrl:products.imageUrl
       }
     });
     return productResponse
@@ -67,7 +68,9 @@ export class ProductsService {
       price: product.price,
       storage: product.storage,
       color: product.color,
-      category: product.category
+      category: product.category,
+      imageUrl:product.imageUrl
+    
     }
     return productResponse
   }
@@ -153,6 +156,7 @@ export class ProductsService {
         { proDescrption: { $regex: key, $options: 'i' } },
         { storage: { $regex: key, $options: 'i' } },
         { color: { $regex: key, $options: 'i' } },
+        { category: { $regex: key, $options: 'i' } }
       ]
     });
     if(!searchProduct||searchProduct.length===0){
@@ -160,13 +164,15 @@ export class ProductsService {
     }
     const productResponse: ProductResponse[] = searchProduct.map((searchProduct) => {
       return {
+        id:searchProduct._id.toString(),
         proName: searchProduct.proName,
         proDescrption: searchProduct.proDescrption,
         price: searchProduct.price,
         storage: searchProduct.storage,
         color: searchProduct.color,
         stock: searchProduct.stock,
-        category:searchProduct.category
+        category:searchProduct.category,
+        imageUrl:searchProduct.imageUrl
       }
     });
     return productResponse

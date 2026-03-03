@@ -9,7 +9,6 @@ export class CreateUserDto{
    @IsEmail()
    email:string
    @IsString()
-   @IsAlpha()
    password:string
 }
 export class LoginDto{

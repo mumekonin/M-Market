@@ -10,7 +10,8 @@ export enum OrderStatus {
 }
 export enum ProductCategory {
   PHONE = 'phone',
-  EARPODS = 'earpods',
+  EARPODS = 'AirPods',
   WATCH = 'watch',
-  LAPTOP = 'macbook',
+  IPAD = 'ipad',
+  LAPTOP="laptop"
 }

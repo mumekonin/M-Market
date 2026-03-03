@@ -47,4 +47,18 @@ async updateStatus(orderId: string, status:OrderStatus) {
   }
   return updatedOrder;
 }
+
+async deleteOrder(orderId:string){
+  const find = await this.orderModel.findById(orderId);
+
+  if(!find){
+    throw new BadRequestException("the order is not found")
+  }
+  
+  const deleteProduct =  await this.orderModel.findByIdAndDelete(orderId)
+
+  return{
+    message:"product is deleted successfully"
+  }
+}
 }

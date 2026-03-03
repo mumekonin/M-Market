@@ -40,13 +40,13 @@ export class ProductsController {
     return this.productsService.updateProduct(id, updateProductDto, file);
   }
   @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  @Roles(Role.USER)
+  @Roles(Role.ADMIN)
   @Delete('delete/:id')
   async deleteProduct(@Param('id') id: string) {
     return this.productsService.deleteProduct(id);
   }
   @Get('search-products')
-  async searchProduct(@Query('key') key: string){
+  async searchProduct(@Query('key') key: string) {
     const product = await this.productsService.searchProduct(key);
     return product
   }

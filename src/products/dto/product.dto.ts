@@ -9,11 +9,9 @@ export class CreateProductDto {
    @IsNumber()
    price: number;
    @IsString()
-   storage: string;
+   storage?: string;
    @IsString()
    color: string;
-   @IsString()
-   imageUrl: string;
    @IsNumber()
    stock: number;
    @IsNotEmpty()

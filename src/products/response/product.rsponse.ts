@@ -7,4 +7,5 @@ export class ProductResponse {
   color?: string;
   stock?:number;
   category?:string;
+  imageUrl?:string;
 }

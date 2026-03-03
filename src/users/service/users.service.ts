@@ -45,7 +45,9 @@ export class UserService{
       }
       //comper password 
       const isPwdValid = await  bcrypt.compare(logInDto.password ,user.password )
-
+      if(!isPwdValid){
+        throw new BadRequestException("wrong password");
+      }
       const jwtData={
         userId:user._id.toString(),
         email:user.email,
