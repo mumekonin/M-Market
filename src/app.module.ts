@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './users/users.module';
 import { JwtStrategy } from './commons/guards/jwt.sstrategy';
 import { OrderModule } from './orders/orders.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [  
@@ -20,7 +21,7 @@ import { OrderModule } from './orders/orders.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
     })
-    ,ProductsModule,UserModule,OrderModule],
+    ,ProductsModule,UserModule,OrderModule,CloudinaryModule],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
 })
