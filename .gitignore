@@ -1,4 +1,8 @@
 # compiled output
+/node_modules
+/dist
+npm-debug.log
+.env
 uploads/*
 !uploads/.gitkeep
 /node_modules

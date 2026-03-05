@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { ProductSchema } from 'src/products/schemas/products.schema';
 import { Order } from '../schemas/orders.schemas';
 import { OrderStatus } from 'src/commons/enums';
+import { orderDto } from '../dto/orders.dto';
 
 @Injectable()
 export class OrdersService {
@@ -21,7 +22,7 @@ async createOrder( userId: string,  productId: string,  quantity: number, screen
   const newOrder = new this.orderModel({
        userId,
        productId,
-       quantity,
+       quantity:Number(quantity),
        totalPrice,
        paymentScreenshot: screenshot.path, 
        status: 'pending',
@@ -36,7 +37,7 @@ async createOrder( userId: string,  productId: string,  quantity: number, screen
     return myOrder;
   }
   async getAllOrders() {
-    const allOrder= await this.orderModel.find().populate('userId', 'name email').populate('productId').exec();
+    const allOrder= await this.orderModel.find().populate('userId', 'fullName email').populate('productId').exec();
     return allOrder;
   }
 

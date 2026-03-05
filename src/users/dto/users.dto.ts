@@ -3,12 +3,13 @@ import { isString } from "util";
 
 export class CreateUserDto{
    @IsString()
-   @IsAlpha()
    @IsNotEmpty()
    fullName:string;
+   @IsNotEmpty()
    @IsEmail()
    email:string
    @IsString()
+   @IsNotEmpty()
    password:string
 }
 export class LoginDto{

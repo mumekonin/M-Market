@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ProductCategory } from "src/commons/enums";
 
 export class CreateProductDto {
@@ -20,18 +20,25 @@ export class CreateProductDto {
 
 }
 export class UpdateProductDto {
+   @IsOptional()
    @IsString()
    proName?: string;
+   @IsOptional()
    @IsString()
    proDescrption?: string;
    @IsNumber()
+   @IsOptional()
    price?: number;
+   @IsOptional()
    @IsString()
    storage?: string;
+   @IsOptional()
    @IsString()
    color?: string;
    @IsString()
+   @IsOptional()
    imageUrl?: string;
+   @IsOptional()
    @IsNumber()
    stock?: number;
    @IsNotEmpty()

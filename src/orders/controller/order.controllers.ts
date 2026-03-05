@@ -5,7 +5,8 @@ import { Roles } from 'src/commons/decorators/roles.decorators';
 import { AuthGuard } from '@nestjs/passport';
 import { DbRolesGuard } from 'src/commons/guards/roles.guards';
 import { Role } from 'src/commons/enums';
-import { UpdateStatusDto } from '../dto/orders.dto';
+import { orderDto, UpdateStatusDto } from '../dto/orders.dto';
+
 @Controller('orders')
 export class OrdersController {
   constructor(
@@ -29,8 +30,8 @@ export class OrdersController {
     const result = await this.ordersService.getMyOrders(userId)
     return result
   }
-  // @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Get('allOrders')
   async getAllOrder() {
     const result = await this.ordersService.getAllOrders()
