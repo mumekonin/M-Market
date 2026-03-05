@@ -6,13 +6,15 @@ import { ProductSchema } from "../schemas/products.schema";
 import { Model } from "mongoose";
 import * as fs from 'fs';
 import { promisify } from 'util';
+import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
 const unlinkAsync = promisify(fs.unlink);
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(ProductSchema.name)
-    private readonly productModel: Model<ProductSchema>
+    private readonly productModel: Model<ProductSchema>,
+    private readonly  cloudinaryService: CloudinaryService, 
   ) { }
   // Create Product
   async createProduct(createProductDto: CreateProductDto, imageUrl: Express.Multer.File) {
@@ -74,56 +76,56 @@ export class ProductsService {
     }
     return productResponse
   }
-  async updateProduct(productId: string, updateProductDto: UpdateProductDto, image?: Express.Multer.File) {
-    const product = await this.productModel.findById(productId)
-    if (!product) {
-      throw new NotFoundException("Product not found");
-    }
-    if (updateProductDto.proName) {
-      product.proName = updateProductDto.proName;
-    } if (updateProductDto.proDescrption) {
-      product.proDescrption = updateProductDto.proDescrption;
-    } if (updateProductDto.price) {
-      product.price = updateProductDto.price;
-    } if (updateProductDto.color) {
-      product.color = updateProductDto.color;
-    } if (updateProductDto.storage) {
-      product.storage = updateProductDto.storage;
-    } if (updateProductDto.stock) {
-      product.stock = updateProductDto.stock;
-    }if(updateProductDto.category){
-      product.category=updateProductDto.category;
-    }
+async updateProduct(productId: string, updateProductDto: UpdateProductDto, image?: Express.Multer.File) {
+  const product = await this.productModel.findById(productId);
+  if (!product) {
+    throw new NotFoundException("Product not found");
+  }
 
-    if (image && image.path) {
-      // Delete old image if exists
-      if (product.imageUrl) {
+  // 1. Update text fields (Existing logic)
+  if (updateProductDto.proName) product.proName = updateProductDto.proName;
+  if (updateProductDto.proDescrption) product.proDescrption = updateProductDto.proDescrption;
+  if (updateProductDto.price) product.price = updateProductDto.price;
+  if (updateProductDto.color) product.color = updateProductDto.color;
+  if (updateProductDto.storage) product.storage = updateProductDto.storage;
+  if (updateProductDto.stock) product.stock = updateProductDto.stock;
+  if (updateProductDto.category) product.category = updateProductDto.category;
+
+  // 2. Hybrid Image Handling Logic
+  if (image) {
+    // --- START CLOUDINARY/LOCAL LOGIC ---
+    if (process.env.NODE_ENV === 'production') {
+      // On Render: Upload to Cloudinary
+      const cloudinaryUrl = await this.cloudinaryService.uploadImage(image);
+      product.imageUrl = cloudinaryUrl; 
+    } else {
+      // Locally: Delete old local file and save new local path
+      if (product.imageUrl && !product.imageUrl.startsWith('http')) {
         try {
           await unlinkAsync(product.imageUrl);
         } catch (err) {
-          console.warn('Failed to delete old image:', err.message);
+          console.warn('Failed to delete old local image:', err.message);
         }
       }
-      product.imageUrl = image.path;
+      product.imageUrl = image.path; // This uses the path from diskStorage
     }
-
-    const updatedProduct = await product.save();
-
-    // Map clean response object
-    const productResponse = {
-      id: updatedProduct._id.toString(),
-      proName: updatedProduct.proName,
-      proDescrption: updatedProduct.proDescrption,
-      price: updatedProduct.price,
-      color: updatedProduct.color,
-      storage: updatedProduct.storage,
-      imageUrl: updatedProduct.imageUrl,
-      stock: updatedProduct.stock,
-      category:updatedProduct.category
-    };
-    return productResponse;
   }
 
+  const updatedProduct = await product.save();
+
+  //  Return mapped response
+  return {
+    id: updatedProduct._id.toString(),
+    proName: updatedProduct.proName,
+    proDescrption: updatedProduct.proDescrption,
+    price: updatedProduct.price,
+    color: updatedProduct.color,
+    storage: updatedProduct.storage,
+    imageUrl: updatedProduct.imageUrl,
+    stock: updatedProduct.stock,
+    category: updatedProduct.category
+  };
+}
   //  DELETE PRODUCT
   async deleteProduct(productId: string) {
     const productToBeDeleted = await this.productModel.findById(productId);
