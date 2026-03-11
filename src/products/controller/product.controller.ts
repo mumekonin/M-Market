@@ -15,7 +15,7 @@ export class ProductsController {
   @Post('upload')
   @UseInterceptors(UploadFileInterceptor())
   async uploadProducts(@Body() createProductDto: CreateProductDto, @UploadedFile() file: Express.Multer.File) {
-    if (!file.path) {
+    if (!file) {
       throw new BadRequestException("FILE IS REQUIRED")
     }
     return this.productsService.createProduct(createProductDto, file);

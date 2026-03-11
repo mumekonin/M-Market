@@ -18,29 +18,29 @@ export class ProductsService {
   ) { }
   // Create Product
 async createProduct(createProductDto: CreateProductDto, image: Express.Multer.File) {
-  let finalImageUrl = image.path;
-  if (process.env.NODE_ENV === 'production') {
-    const cloudinaryUrl = await this.cloudinaryService.uploadImage(image);
-    finalImageUrl = cloudinaryUrl; 
+    if (!image) {
+      throw new BadRequestException("Product image is required");
+    }
+    const imageUrl = await this.cloudinaryService.uploadImage(image);
+
+  
+    const newProduct = new this.productModel({
+      proName: createProductDto.proName,
+      proDescrption: createProductDto.proDescrption,
+      price: createProductDto.price,
+      color: createProductDto.color,
+      storage: createProductDto.storage,
+      stock: createProductDto.stock,
+      imageUrl: imageUrl, 
+      category: createProductDto.category,
+    });
+
+    const savedProduct = await newProduct.save();
+    return {
+      message: "Product added successfully",
+      product: savedProduct,
+    };
   }
-
-  const newProduct = new this.productModel({
-    proName: createProductDto.proName,
-    proDescrption: createProductDto.proDescrption,
-    price: createProductDto.price,
-    color: createProductDto.color,
-    storage: createProductDto.storage,
-    stock: createProductDto.stock,
-    imageUrl: finalImageUrl, // Use the processed URL
-    category: createProductDto.category
-  });
-
-  const savedProduct = await newProduct.save();
-  return {
-    message: "Product added successfully",
-    product: savedProduct
-  };
-}
   //Retrieve all products
   async getAllProducts() {
     const products = await this.productModel.find()
