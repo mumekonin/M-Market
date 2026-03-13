@@ -69,5 +69,5 @@ npm run start:dev
 Hosted on **Render** as a Web Service. Build command: `npm install && npm run build`. Start command: `npm run start:prod`.
 
 ## Related
-🌐 Frontend repo: [m-market-frontend](https://github.com/mumekonin/m-market-electronics)
-   deployed Frontend: [viwe](https://m-market-electronics.vercel.app/)
+🌐 Frontend repo: [m-market-frontend](https://github.com/mumekonin/m-market-frontend)
+   deployed Frontend: [viwe](https://m-market-frontend.vercel.app/)
